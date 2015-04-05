@@ -14,9 +14,9 @@ namespace StringCalculatorCSharp
         {
             if (string.IsNullOrEmpty(input)) return 0;
 
-            var parseSingleDigit = Parse.Digit.Once();
+            var parseNumber = Parse.Digit.AtLeastOnce();
 
-            var parsed = new string(parseSingleDigit.Parse(input).ToArray());
+            var parsed = new string(parseNumber.Parse(input).ToArray());
 
             return int.Parse(parsed);
         }

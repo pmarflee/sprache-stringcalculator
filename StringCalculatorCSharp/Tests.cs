@@ -11,18 +11,10 @@ namespace StringCalculatorCSharp
     [TestFixture]
     public class Tests
     {
-        private StringCalculator _stringCalculator;
-
-        [SetUp]
-        public void SetUp()
+        [TestCase("", ExpectedResult=0)]
+        public int TestAdd(string input)
         {
-            _stringCalculator = new StringCalculator();
-        }
-
-        [Test]
-        public void ShouldReturnZeroForAnEmptyString()
-        {
-            Assert.AreEqual(0, _stringCalculator.Add(String.Empty));
+            return new StringCalculator().Add(input);
         }
     }
 }

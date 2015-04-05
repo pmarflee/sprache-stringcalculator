@@ -12,6 +12,8 @@ namespace StringCalculatorCSharp
     public class Tests
     {
         [TestCase("", ExpectedResult=0)]
+        [TestCase("1", ExpectedResult=1)]
+        [TestCase("2", ExpectedResult=2)]
         public int TestAdd(string input)
         {
             return new StringCalculator().Add(input);

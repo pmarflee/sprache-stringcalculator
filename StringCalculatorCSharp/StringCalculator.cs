@@ -10,7 +10,7 @@ namespace StringCalculatorCSharp
 {
     class StringCalculator
     {
-        static readonly Parser<char> Separator = Parse.Char(',');
+        static readonly Parser<char> Separator = Parse.Char(',').Or(Parse.Char('\n'));
         static readonly Parser<string> Number = Parse.Digit.AtLeastOnce().Text();
         static readonly Parser<string> Terminator = Parse.Return("");
         static readonly Parser<IEnumerable<string>> Numbers =

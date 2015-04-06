@@ -15,17 +15,21 @@ namespace StringCalculatorCSharp
 
     class StringCalculator
     {
+        static readonly Parser<char> NewLine = Parse.Char('\n');
+        static readonly Parser<char> OpenBracket = Parse.Char('[');
+        static readonly Parser<char> CloseBracket = Parse.Char(']');
+        static readonly Parser<char> Comma = Parse.Char(',');
         static readonly Parser<string> Number = Parse.Regex(@"-?\d+");
 
         static readonly Parser<string> MultiCharSeparator = 
-            Parse.CharExcept("[]").Many().Contained(Parse.Char('['), Parse.Char(']')).Text();
+            Parse.CharExcept("[]").Many().Contained(OpenBracket, CloseBracket).Text();
 
         static readonly Parser<string> Separator = MultiCharSeparator.Or(Parse.AnyChar.Once()).Text();
 
         static readonly Parser<string> CustomSeparator =
             from begin in Parse.String("//")
             from separator in Separator
-            from end in Parse.Char('\n')
+            from end in NewLine
             select separator;
 
         static readonly Parser<IEnumerable<string>> Input =
@@ -49,7 +53,7 @@ namespace StringCalculatorCSharp
         {
             return (separatorOption.IsDefined
                 ? Parse.String(separatorOption.Get())
-                : Parse.Char(',').Or(Parse.Char('\n')).Once()).Text();
+                : Comma.Or(NewLine).Once()).Text();
         }
     }
 

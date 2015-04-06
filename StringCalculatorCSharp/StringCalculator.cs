@@ -17,15 +17,20 @@ namespace StringCalculatorCSharp
     {
         static readonly Parser<string> Number = Parse.Regex(@"-?\d+");
 
-        static readonly Parser<char> CustomSeparator =
+        static readonly Parser<string> MultiCharSeparator = 
+            Parse.CharExcept("[]").Many().Contained(Parse.Char('['), Parse.Char(']')).Text();
+
+        static readonly Parser<string> Separator = MultiCharSeparator.Or(Parse.AnyChar.Once()).Text();
+
+        static readonly Parser<string> CustomSeparator =
             from begin in Parse.String("//")
-            from separator in Parse.AnyChar
+            from separator in Separator
             from end in Parse.Char('\n')
             select separator;
 
         static readonly Parser<IEnumerable<string>> Input =
             from separatorOption in CustomSeparator.Optional()
-            let separator = Separator(separatorOption)
+            let separator = CreateSeparator(separatorOption)
             from numbers in Number.DelimitedBy(separator)
             select numbers;
 
@@ -40,11 +45,11 @@ namespace StringCalculatorCSharp
                 .Sum();
         }
 
-        static Parser<char> Separator(IOption<char> separatorOption)
+        static Parser<string> CreateSeparator(IOption<string> separatorOption)
         {
-            return separatorOption.IsDefined
-                ? Parse.Char(separatorOption.Get())
-                : Parse.Char(',').Or(Parse.Char('\n'));
+            return (separatorOption.IsDefined
+                ? Parse.String(separatorOption.Get())
+                : Parse.Char(',').Or(Parse.Char('\n')).Once()).Text();
         }
     }
 

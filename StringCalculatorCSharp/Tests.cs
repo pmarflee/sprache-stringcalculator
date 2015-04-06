@@ -22,6 +22,8 @@ namespace StringCalculatorCSharp
         [TestCase("1\n2,3", ExpectedResult=6)]
         [TestCase("//;\n1;2", ExpectedResult=3)]
         [TestCase("//;\n1;2;3", ExpectedResult=6)]
+        [TestCase("1,1001", ExpectedResult=1)]
+        [TestCase("1,2,1001,1002", ExpectedResult=3)]
         public int TestAdd(string input)
         {
             return Add(input);

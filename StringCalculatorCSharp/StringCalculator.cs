@@ -36,6 +36,7 @@ namespace StringCalculatorCSharp
             return Input.Parse(input)
                 .Select(int.Parse)
                 .ThrowExceptionForNegativeNumbers()
+                .Where(number => number <= 1000)
                 .Sum();
         }
 

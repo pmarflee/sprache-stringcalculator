@@ -26,7 +26,7 @@ namespace StringCalculatorCSharp
         static readonly Parser<IEnumerable<string>> Input =
             from separatorOption in CustomSeparator.Optional()
             let separator = Separator(separatorOption)
-            from numbers in Numbers(separator)
+            from numbers in Number.DelimitedBy(separator)
             select numbers;
 
         public int Add(string input)
@@ -45,21 +45,6 @@ namespace StringCalculatorCSharp
             return separatorOption.IsDefined
                 ? Parse.Char(separatorOption.Get())
                 : Parse.Char(',').Or(Parse.Char('\n'));
-        }
-
-        static Parser<IEnumerable<string>> Numbers(Parser<char> separatorParser)
-        {
-            return from leading in Number
-                   from rest in separatorParser.Then(_ => Number).Many()
-                   from terminator in Parse.Return("")
-                   select Cons(leading, rest);
-        }
-
-        static IEnumerable<T> Cons<T>(T head, IEnumerable<T> rest)
-        {
-            yield return head;
-            foreach (var item in rest)
-                yield return item;
         }
     }
 

@@ -24,6 +24,19 @@ namespace StringCalculatorCSharp
         [TestCase("//;\n1;2;3", ExpectedResult=6)]
         public int TestAdd(string input)
         {
+            return Add(input);
+        }
+
+        [TestCase("-1", ExpectedException = typeof(StringCalculatorException), ExpectedMessage = "negatives not allowed: -1")]
+        [TestCase("-1,-2", ExpectedException = typeof(StringCalculatorException), ExpectedMessage = "negatives not allowed: -1 -2")]
+        [TestCase("-1,-2,-3", ExpectedException = typeof(StringCalculatorException), ExpectedMessage = "negatives not allowed: -1 -2 -3")]
+        public void TestAddRaisesException(string input)
+        {
+            Add(input);
+        }
+
+        private int Add(string input)
+        {
             return new StringCalculator().Add(input);
         }
     }

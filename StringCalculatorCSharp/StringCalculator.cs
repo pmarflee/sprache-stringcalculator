@@ -8,9 +8,14 @@ using Sprache;
 
 namespace StringCalculatorCSharp
 {
+    class StringCalculatorException : Exception
+    {
+        public StringCalculatorException(string message) : base(message) { }
+    }
+
     class StringCalculator
     {
-        static readonly Parser<string> Number = Parse.Digit.AtLeastOnce().Text();
+        static readonly Parser<string> Number = Parse.Regex(@"-?\d+");
 
         static readonly Parser<char> CustomSeparator =
             from begin in Parse.String("//")
@@ -28,7 +33,10 @@ namespace StringCalculatorCSharp
         {
             if (string.IsNullOrEmpty(input)) return 0;
 
-            return Input.Parse(input).Select(int.Parse).Sum();
+            return Input.Parse(input)
+                .Select(int.Parse)
+                .ThrowExceptionForNegativeNumbers()
+                .Sum();
         }
 
         static Parser<char> Separator(IOption<char> separatorOption)
@@ -51,6 +59,18 @@ namespace StringCalculatorCSharp
             yield return head;
             foreach (var item in rest)
                 yield return item;
+        }
+    }
+
+    static class Extensions
+    {
+        public static IEnumerable<int> ThrowExceptionForNegativeNumbers(this IEnumerable<int> numbers)
+        {
+            var negativeNumbers = numbers.Where(number => number < 0).ToList();
+
+            if (negativeNumbers.Count == 0) return numbers;
+
+            throw new StringCalculatorException("negatives not allowed: " + string.Join(" ", negativeNumbers));
         }
     }
 }

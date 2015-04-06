@@ -26,6 +26,7 @@ namespace StringCalculatorCSharp
         [TestCase("1,2,1001,1002", ExpectedResult=3)]
         [TestCase("//[***]\n1***2***3", ExpectedResult=6)]
         [TestCase("//[*][%]\n1*2%3", ExpectedResult=6)]
+        [TestCase("//[***][%%%]\n1***2%%%3", ExpectedResult=6)]
         public int TestAdd(string input)
         {
             return Add(input);

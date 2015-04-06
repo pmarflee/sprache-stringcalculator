@@ -24,9 +24,9 @@ namespace StringCalculatorCSharp
         static readonly Parser<string> MultiCharSeparator = 
             Parse.CharExcept("[]").Many().Contained(OpenBracket, CloseBracket).Text();
 
-        static readonly Parser<string> Separator = MultiCharSeparator.Or(Parse.AnyChar.Once()).Text();
+        static readonly Parser<IEnumerable<string>> Separator = MultiCharSeparator.Many().Or(Parse.AnyChar.Once().Text().Once());
 
-        static readonly Parser<string> CustomSeparator =
+        static readonly Parser<IEnumerable<string>> CustomSeparator =
             from begin in Parse.String("//")
             from separator in Separator
             from end in NewLine
@@ -49,10 +49,10 @@ namespace StringCalculatorCSharp
                 .Sum();
         }
 
-        static Parser<string> CreateSeparator(IOption<string> separatorOption)
+        static Parser<string> CreateSeparator(IOption<IEnumerable<string>> separatorOption)
         {
             return (separatorOption.IsDefined
-                ? Parse.String(separatorOption.Get())
+                ? separatorOption.Get().Aggregate(Parse.String(""), (acc, pattern) => acc.Or(Parse.String(pattern)))
                 : Comma.Or(NewLine).Once()).Text();
         }
     }
